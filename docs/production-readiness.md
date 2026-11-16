@@ -1,10 +1,10 @@
-# Production readiness: what this POC uses, and what production would use instead
+# Production readiness: what this build uses, and what production would use instead
 
-This is a proof of concept with sample data, running in one AWS dev environment. The left column is
+This build runs with sample data in one AWS dev environment. The left column is
 what is actually built and tested here; the right column is what a production deployment would add
 or replace, and why. Everything marked "built" has tests and was verified live in dev.
 
-## 1. Already production-style in the POC (built and tested)
+## 1. Already production-style (built and tested)
 | Area | What is implemented |
 |---|---|
 | Identity propagation | Customer identity comes only from the verified Cognito JWT; no tool accepts a customer id; cross-customer access blocked and red-team tested |
@@ -17,8 +17,8 @@ or replace, and why. Everything marked "built" has tests and was verified live i
 | Delivery | CDK for every resource, GitHub Actions CI/CD with OIDC (no stored keys), pinned actions, environment-gated promotion |
 | Recovery | DynamoDB point-in-time recovery, restore drill (77/77 items, 269 s) |
 
-## 2. POC substitutes and their production replacements
-| Area | POC (what is used now) | Production | Why |
+## 2. Stand-in components and their production replacements
+| Area | Used now (dev) | Production | Why |
 |---|---|---|---|
 | Payments | Simulated gateway: a DynamoDB ledger, idempotent on the refund id | Real payment provider (Stripe, Razorpay, Adyen) behind the same `PaymentGateway` interface, with webhooks for async confirmation | Real money movement; the idempotency contract is already enforced, so only the adapter changes |
 | Data | Seeded sample orders and policy documents | Integration with the real order management system (APIs or EventBridge events) and the company's policy content owners | The agent's tools call an API, so the source can be swapped without touching the agents |

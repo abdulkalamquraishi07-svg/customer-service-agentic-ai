@@ -18,10 +18,10 @@ answers are grounded in retrieved documents; unresolved or risky cases escalate 
 | 8 | Web app: customer chat + orders panel, ops console (refund approvals, escalated tickets); S3 + CloudFront | Deployed to dev (https://d3t8s3rylz5sib.cloudfront.net); CORS, security headers, role gating and the chat->escalation->ops-queue path verified over HTTPS; not clicked through in a real browser (see below) |
 | 9 | CI/CD (GitHub Actions, OIDC, gated promotion), reproducible builds, dependency audits, DynamoDB restore drill | Written and statically verified (actionlint, policy tests with mutation checks, offline `cdk synth` of all three environments, clean-environment test run). **The workflows have not run on GitHub yet** and the OIDC roles are not deployed (they need your GitHub repo name). DynamoDB PITR restore drilled in dev. See ADR 0006 and `docs/runbook.md` |
 | 10 | Per-customer rate limits + token budget, agent dashboard and alarms, reply grounding (hallucination) check | Deployed to dev; live rate-limit check passes; grounding calibrated and enforced (ADR 0007) |
-| 11 | CI/CD identity for `abdulkalamquraishi07-svg/customer-service-agentic-ai` | OIDC provider and dev deploy/verify roles deployed; the pipeline has not run yet (code not pushed) |
+| 11 | CI/CD identity for `abdulkalamquraishi07-svg/customer-service-agentic-ai` | OIDC provider and dev deploy/verify roles deployed; CI passes on GitHub; the dev deploy job needs the role ARNs set as `dev` environment variables |
 
-Scope: this is a proof of concept with sample data in one dev environment. See
-`docs/production-readiness.md` for what each POC substitute becomes in production.
+Scope: runs with sample data (fictional retailer, simulated payments) in one AWS dev environment.
+See `docs/production-readiness.md` for what each stand-in component becomes in production.
 
 ## Web app (`web/`)
 React 19 + TypeScript + Vite + Tailwind. Sign-in with Cognito (SRP, handles first-login password
