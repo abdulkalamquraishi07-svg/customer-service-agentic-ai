@@ -1,0 +1,1091 @@
+{
+ "Resources": {
+  "MonitoringLatencyP95A87F3103": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "p95 turn latency at or above 60 s for 15 minutes",
+    "AlarmName": "csagent-prod-agent-latencyp95",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 3,
+    "EvaluationPeriods": 3,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "LatencyMs",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "LatencyMs",
+        "Namespace": "CSAgent"
+       },
+       "Period": 300,
+       "Stat": "p95"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 60000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/LatencyP95/Resource"
+   }
+  },
+  "MonitoringTurnFailures4A30661B": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "Turns are crashing (guardrail, limiter or model errors): see the runtime log",
+    "AlarmName": "csagent-prod-agent-turnfailures",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "TurnFailed",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "TurnFailed",
+        "Namespace": "CSAgent"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 3,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/TurnFailures/Resource"
+   }
+  },
+  "MonitoringToolErrorsFEB3CBFE": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "Agent tools are failing (business API or knowledge base degraded)",
+    "AlarmName": "csagent-prod-agent-toolerrors",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "ToolErrors",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "ToolErrors",
+        "Namespace": "CSAgent"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 10,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/ToolErrors/Resource"
+   }
+  },
+  "MonitoringRateLimitedSurge89D786BD": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "Many customers hitting rate limits: possible scripted abuse",
+    "AlarmName": "csagent-prod-agent-ratelimitedsurge",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "RateLimited",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "RateLimited",
+        "Namespace": "CSAgent"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 30,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/RateLimitedSurge/Resource"
+   }
+  },
+  "MonitoringGuardrailInputSurgeE2BAFD5A": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "Burst of blocked customer messages: possible prompt-injection campaign",
+    "AlarmName": "csagent-prod-agent-guardrailinputsurge",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "GuardrailInputBlocked",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "GuardrailInputBlocked",
+        "Namespace": "CSAgent"
+       },
+       "Period": 300,
+       "Stat": "Sum"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 25,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/GuardrailInputSurge/Resource"
+   }
+  },
+  "MonitoringUnverifiedClaims5D20B16B": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "The model keeps promising actions it did not perform: prompt or model regression",
+    "AlarmName": "csagent-prod-agent-unverifiedclaims",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Id": "m1",
+      "Label": "ClaimCheckTriggered",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "ClaimCheckTriggered",
+        "Namespace": "CSAgent"
+       },
+       "Period": 3600,
+       "Stat": "Sum"
+      },
+      "ReturnData": true
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 5,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/UnverifiedClaims/Resource"
+   }
+  },
+  "MonitoringTokenSpend93C1EF3F": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+     }
+    ],
+    "AlarmDescription": "Environment-wide token use per hour is above the configured threshold",
+    "AlarmName": "csagent-prod-agent-tokenspend",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "DatapointsToAlarm": 1,
+    "EvaluationPeriods": 1,
+    "Metrics": [
+     {
+      "Expression": "i + o",
+      "Id": "expr_1",
+      "Label": "Tokens per hour"
+     },
+     {
+      "Id": "i",
+      "Label": "InputTokens",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "InputTokens",
+        "Namespace": "CSAgent"
+       },
+       "Period": 3600,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     },
+     {
+      "Id": "o",
+      "Label": "OutputTokens",
+      "MetricStat": {
+       "Metric": {
+        "Dimensions": [
+         {
+          "Name": "Environment",
+          "Value": "prod"
+         }
+        ],
+        "MetricName": "OutputTokens",
+        "Namespace": "CSAgent"
+       },
+       "Period": 3600,
+       "Stat": "Sum"
+      },
+      "ReturnData": false
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 2000000,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/TokenSpend/Resource"
+   }
+  },
+  "MonitoringDashboard0C3675C6": {
+   "Type": "AWS::CloudWatch::Dashboard",
+   "Properties": {
+    "DashboardBody": {
+     "Fn::Join": [
+      "",
+      [
+       "{\"start\":\"-PT6H\",\"widgets\":[{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Turns and failures\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"Turns\",\"Environment\",\"prod\",{\"label\":\"Turns\",\"stat\":\"Sum\"}],[\"CSAgent\",\"TurnFailed\",\"Environment\",\"prod\",{\"label\":\"TurnFailed\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Turn latency (ms)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"LatencyMs\",\"Environment\",\"prod\",{\"label\":\"p50\",\"stat\":\"p50\"}],[\"CSAgent\",\"LatencyMs\",\"Environment\",\"prod\",{\"label\":\"p95\",\"stat\":\"p95\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":0,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tokens\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"InputTokens\",\"Environment\",\"prod\",{\"label\":\"InputTokens\",\"stat\":\"Sum\"}],[\"CSAgent\",\"OutputTokens\",\"Environment\",\"prod\",{\"label\":\"OutputTokens\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Tool errors\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"ToolErrors\",\"Environment\",\"prod\",{\"label\":\"ToolErrors\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Safety interventions\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"GuardrailInputBlocked\",\"Environment\",\"prod\",{\"label\":\"GuardrailInputBlocked\",\"stat\":\"Sum\"}],[\"CSAgent\",\"GuardrailOutputBlocked\",\"Environment\",\"prod\",{\"label\":\"GuardrailOutputBlocked\",\"stat\":\"Sum\"}],[\"CSAgent\",\"ClaimCheckTriggered\",\"Environment\",\"prod\",{\"label\":\"ClaimCheckTriggered\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":6,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Abuse controls\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"RateLimited\",\"Environment\",\"prod\",{\"label\":\"RateLimited\",\"stat\":\"Sum\"}],[\"CSAgent\",\"Rejected\",\"Environment\",\"prod\",{\"label\":\"Rejected\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":0,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Grounding (hallucination check)\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"GroundingBlocked\",\"Environment\",\"prod\",{\"label\":\"GroundingBlocked\",\"stat\":\"Sum\"}],[\"CSAgent\",\"GroundingShadowBlocked\",\"Environment\",\"prod\",{\"label\":\"GroundingShadowBlocked\",\"stat\":\"Sum\"}],[\"CSAgent\",\"GroundingScore\",\"Environment\",\"prod\",{\"label\":\"score p10\",\"stat\":\"p10\",\"yAxis\":\"right\"}],[\"CSAgent\",\"GroundingScore\",\"Environment\",\"prod\",{\"label\":\"score p50\",\"stat\":\"p50\",\"yAxis\":\"right\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":8,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Escalations suggested\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"EscalationSuggested\",\"Environment\",\"prod\",{\"label\":\"EscalationSuggested\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"metric\",\"width\":8,\"height\":6,\"x\":16,\"y\":12,\"properties\":{\"view\":\"timeSeries\",\"title\":\"Request limits hit\",\"region\":\"",
+       {
+        "Ref": "AWS::Region"
+       },
+       "\",\"metrics\":[[\"CSAgent\",\"LimitHit\",\"Environment\",\"prod\",{\"label\":\"LimitHit\",\"stat\":\"Sum\"}]],\"yAxis\":{}}},{\"type\":\"alarm\",\"width\":8,\"height\":6,\"x\":0,\"y\":18,\"properties\":{\"title\":\"Agent alarms\",\"alarms\":[\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringLatencyP95A87F3103",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringTurnFailures4A30661B",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringToolErrorsFEB3CBFE",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringRateLimitedSurge89D786BD",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringGuardrailInputSurgeE2BAFD5A",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringUnverifiedClaims5D20B16B",
+         "Arn"
+        ]
+       },
+       "\",\"",
+       {
+        "Fn::GetAtt": [
+         "MonitoringTokenSpend93C1EF3F",
+         "Arn"
+        ]
+       },
+       "\"]}}]}"
+      ]
+     ]
+    },
+    "DashboardName": "csagent-prod-agent"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Monitoring/Dashboard/Resource"
+   }
+  },
+  "Guardrail": {
+   "Type": "AWS::Bedrock::Guardrail",
+   "Properties": {
+    "BlockedInputMessaging": "I'm sorry, I can't help with that request.",
+    "BlockedOutputsMessaging": "I'm sorry, I can't provide that response.",
+    "ContentPolicyConfig": {
+     "FiltersConfig": [
+      {
+       "InputStrength": "HIGH",
+       "OutputStrength": "NONE",
+       "Type": "PROMPT_ATTACK"
+      },
+      {
+       "InputStrength": "HIGH",
+       "OutputStrength": "HIGH",
+       "Type": "HATE"
+      },
+      {
+       "InputStrength": "HIGH",
+       "OutputStrength": "HIGH",
+       "Type": "SEXUAL"
+      },
+      {
+       "InputStrength": "MEDIUM",
+       "OutputStrength": "HIGH",
+       "Type": "VIOLENCE"
+      },
+      {
+       "InputStrength": "MEDIUM",
+       "OutputStrength": "HIGH",
+       "Type": "MISCONDUCT"
+      },
+      {
+       "InputStrength": "NONE",
+       "OutputStrength": "HIGH",
+       "Type": "INSULTS"
+      }
+     ]
+    },
+    "Description": "Customer service chat: prompt attacks, harmful content, payment PII",
+    "Name": "csagent-prod-customer-chat",
+    "SensitiveInformationPolicyConfig": {
+     "PiiEntitiesConfig": [
+      {
+       "Type": "CREDIT_DEBIT_CARD_NUMBER",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      },
+      {
+       "Type": "CREDIT_DEBIT_CARD_CVV",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      },
+      {
+       "Type": "PASSWORD",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      },
+      {
+       "Type": "AWS_ACCESS_KEY",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      },
+      {
+       "Type": "AWS_SECRET_KEY",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      },
+      {
+       "Type": "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+       "Action": "ANONYMIZE",
+       "InputAction": "ANONYMIZE",
+       "InputEnabled": true,
+       "OutputAction": "ANONYMIZE",
+       "OutputEnabled": true
+      }
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Guardrail"
+   }
+  },
+  "GroundingGuardrail": {
+   "Type": "AWS::Bedrock::Guardrail",
+   "Properties": {
+    "BlockedInputMessaging": "Not applicable: grounding is checked on replies only.",
+    "BlockedOutputsMessaging": "I couldn't confirm that from our records.",
+    "ContextualGroundingPolicyConfig": {
+     "FiltersConfig": [
+      {
+       "Type": "GROUNDING",
+       "Threshold": 0.05,
+       "Action": "NONE",
+       "Enabled": true
+      }
+     ]
+    },
+    "Description": "Scores whether agent replies are supported by the turn's tool results",
+    "Name": "csagent-prod-reply-grounding",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/GroundingGuardrail"
+   }
+  },
+  "GroundingGuardrailVersion": {
+   "Type": "AWS::Bedrock::GuardrailVersion",
+   "Properties": {
+    "Description": "grounding threshold 0.05",
+    "GuardrailIdentifier": {
+     "Fn::GetAtt": [
+      "GroundingGuardrail",
+      "GuardrailId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/GroundingGuardrailVersion"
+   }
+  },
+  "GuardrailVersion": {
+   "Type": "AWS::Bedrock::GuardrailVersion",
+   "Properties": {
+    "Description": "policy fdc2ad9f4f59",
+    "GuardrailIdentifier": {
+     "Fn::GetAtt": [
+      "Guardrail",
+      "GuardrailId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/GuardrailVersion"
+   }
+  },
+  "ExecutionRole605A040B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Condition": {
+        "StringEquals": {
+         "aws:SourceAccount": "542879660427"
+        },
+        "ArnLike": {
+         "aws:SourceArn": "arn:aws:bedrock-agentcore:us-east-1:542879660427:*"
+        }
+       },
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "bedrock-agentcore.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "RoleName": "csagent-prod-agent-runtime",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/ExecutionRole/Resource"
+   }
+  },
+  "ExecutionRoleDefaultPolicyA5B92313": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:GetBucket*",
+        "s3:GetObject*",
+        "s3:List*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-542879660427-us-east-1"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":s3:::cdk-hnb659fds-assets-542879660427-us-east-1/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "bedrock:InvokeModel",
+        "bedrock:InvokeModelWithResponseStream"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:bedrock:us-east-1:542879660427:inference-profile/us.amazon.nova-pro-v1:0",
+        "arn:aws:bedrock:us-east-1::foundation-model/amazon.nova-pro-v1:0",
+        "arn:aws:bedrock:us-east-2::foundation-model/amazon.nova-pro-v1:0",
+        "arn:aws:bedrock:us-west-2::foundation-model/amazon.nova-pro-v1:0"
+       ],
+       "Sid": "InvokeConfiguredModelOnly"
+      },
+      {
+       "Action": "bedrock:ApplyGuardrail",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "GroundingGuardrail",
+          "GuardrailArn"
+         ]
+        },
+        {
+         "Fn::GetAtt": [
+          "Guardrail",
+          "GuardrailArn"
+         ]
+        }
+       ],
+       "Sid": "ApplyChatGuardrail"
+      },
+      {
+       "Action": "bedrock:Retrieve",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-knowledge:ExportsOutputFnGetAttKnowledgeBaseKnowledgeBaseArn47097C46"
+       },
+       "Sid": "RetrievePolicyDocuments"
+      },
+      {
+       "Action": [
+        "logs:CreateLogGroup",
+        "logs:DescribeLogStreams"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:us-east-1:542879660427:log-group:/aws/bedrock-agentcore/runtimes/*"
+      },
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:us-east-1:542879660427:log-group:/aws/bedrock-agentcore/runtimes/*:log-stream:*"
+      },
+      {
+       "Action": "logs:DescribeLogGroups",
+       "Effect": "Allow",
+       "Resource": "arn:aws:logs:us-east-1:542879660427:log-group:*"
+      },
+      {
+       "Action": [
+        "xray:GetSamplingRules",
+        "xray:GetSamplingTargets",
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": "cloudwatch:PutMetricData",
+       "Condition": {
+        "StringEquals": {
+         "cloudwatch:namespace": [
+          "bedrock-agentcore",
+          "CSAgent"
+         ]
+        }
+       },
+       "Effect": "Allow",
+       "Resource": "*",
+       "Sid": "PublishRuntimeAndAgentMetrics"
+      },
+      {
+       "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttRateLimit4AEB4E56Arn4472503E"
+       },
+       "Sid": "RateLimitCounters"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ExecutionRoleDefaultPolicyA5B92313",
+    "Roles": [
+     {
+      "Ref": "ExecutionRole605A040B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/ExecutionRole/DefaultPolicy/Resource"
+   }
+  },
+  "Runtime": {
+   "Type": "AWS::BedrockAgentCore::Runtime",
+   "Properties": {
+    "AgentRuntimeName": "csagent_prod_supervisor",
+    "Description": "Customer service supervisor + specialist agents",
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "ExecutionRole605A040B",
+      "Arn"
+     ]
+    },
+    "AgentRuntimeArtifact": {
+     "CodeConfiguration": {
+      "Code": {
+       "S3": {
+        "Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+        "Prefix": "e7573e01fb41e086fd1548fff0baeab6b4bb0cb1220ce0e21e0896888905bf62.zip"
+       }
+      },
+      "Runtime": "PYTHON_3_12",
+      "EntryPoint": [
+       "main.py"
+      ]
+     }
+    },
+    "NetworkConfiguration": {
+     "NetworkMode": "PUBLIC"
+    },
+    "AuthorizerConfiguration": {
+     "CustomJWTAuthorizer": {
+      "DiscoveryUrl": {
+       "Fn::Join": [
+        "",
+        [
+         "https://cognito-idp.us-east-1.amazonaws.com/",
+         {
+          "Fn::ImportValue": "csagent-prod-auth:ExportsOutputRefUserPool6BA7E5F296FD7236"
+         },
+         "/.well-known/openid-configuration"
+        ]
+       ]
+      },
+      "AllowedAudience": [
+       {
+        "Fn::ImportValue": "csagent-prod-auth:ExportsOutputRefUserPoolWebClient4C9370B02E2C9FF9"
+       }
+      ]
+     }
+    },
+    "RequestHeaderConfiguration": {
+     "RequestHeaderAllowlist": [
+      "Authorization"
+     ]
+    },
+    "LifecycleConfiguration": {
+     "IdleRuntimeSessionTimeout": 900,
+     "MaxLifetime": 3600
+    },
+    "EnvironmentVariables": {
+     "API_BASE_URL": {
+      "Fn::Join": [
+       "",
+       [
+        "https://",
+        {
+         "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefApiF70053CD5653BA4D"
+        },
+        ".execute-api.us-east-1.",
+        {
+         "Ref": "AWS::URLSuffix"
+        },
+        "/",
+        {
+         "Fn::ImportValue": "csagent-prod-api:ExportsOutputRefApiDeploymentStageprod3EB9684E9290AA51"
+        },
+        "/"
+       ]
+      ]
+     },
+     "MODEL_ID": "us.amazon.nova-pro-v1:0",
+     "KNOWLEDGE_BASE_ID": {
+      "Fn::ImportValue": "csagent-prod-knowledge:ExportsOutputFnGetAttKnowledgeBaseKnowledgeBaseIdFC83E473"
+     },
+     "GUARDRAIL_ID": {
+      "Fn::GetAtt": [
+       "Guardrail",
+       "GuardrailId"
+      ]
+     },
+     "GUARDRAIL_VERSION": {
+      "Fn::GetAtt": [
+       "GuardrailVersion",
+       "Version"
+      ]
+     },
+     "GROUNDING_GUARDRAIL_ID": {
+      "Fn::GetAtt": [
+       "GroundingGuardrail",
+       "GuardrailId"
+      ]
+     },
+     "GROUNDING_GUARDRAIL_VERSION": {
+      "Fn::GetAtt": [
+       "GroundingGuardrailVersion",
+       "Version"
+      ]
+     },
+     "GROUNDING_THRESHOLD": "0.05",
+     "GROUNDING_MODE": "enforce",
+     "RATE_LIMIT_TABLE": {
+      "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefRateLimit4AEB4E56E043BCD3"
+     },
+     "LIMIT_PER_MINUTE": "6",
+     "LIMIT_PER_HOUR": "60",
+     "LIMIT_PER_DAY": "250",
+     "LIMIT_DAILY_TOKENS": "600000",
+     "APP_ENV": "prod"
+    }
+   },
+   "DependsOn": [
+    "ExecutionRoleDefaultPolicyA5B92313",
+    "ExecutionRole605A040B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/Runtime"
+   }
+  },
+  "RuntimeArnParameter6FDDF9F5": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "AgentCore runtime ARN for clients (web app config)",
+    "Name": "/csagent/prod/client/agentRuntimeArn",
+    "Tags": {
+     "app": "csagent",
+     "environment": "prod",
+     "managed-by": "cdk"
+    },
+    "Type": "String",
+    "Value": {
+     "Fn::GetAtt": [
+      "Runtime",
+      "AgentRuntimeArn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/RuntimeArnParameter/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02OwWrDMBBEvyX39TaJDzknKfRY40CvYS0ptmpZKrsSJhj9e5FNS07z3g4sc8TDaY/7Hc1SKT1Wzna43CKpEWiW+6JcSHqmqAZczo54guvDb/BOMnSBWJfTv2SQ+k4iJgqeS4DUeElqNPFCYqAzmoMacbk+/Eci1kzWwat8GRYbfAZLEy5tcKbUazbBWfUsulEGkansZev7hpgmEw2v/Z/kDOuMW6Te+h5aIyGx2n6+8GeKPylmaJ5xCP6txsMRT7tvsbbi5KOdDLZb/gIK+rtfMwEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-agent/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "AgentRuntimeArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Runtime",
+     "AgentRuntimeArn"
+    ]
+   }
+  },
+  "AgentRuntimeName": {
+   "Value": "csagent_prod_supervisor"
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

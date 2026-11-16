@@ -1,0 +1,703 @@
+{
+ "Resources": {
+  "DataKey17AFBB84": {
+   "Type": "AWS::KMS::Key",
+   "Properties": {
+    "Description": "Encrypts customer-service application data",
+    "EnableKeyRotation": true,
+    "KeyPolicy": {
+     "Statement": [
+      {
+       "Action": "kms:*",
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::Join": [
+          "",
+          [
+           "arn:",
+           {
+            "Ref": "AWS::Partition"
+           },
+           ":iam::542879660427:root"
+          ]
+         ]
+        }
+       },
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/DataKey/Resource"
+   }
+  },
+  "DataKeyAliasF989EB84": {
+   "Type": "AWS::KMS::Alias",
+   "Properties": {
+    "AliasName": "alias/csagent-prod-data",
+    "TargetKeyId": {
+     "Fn::GetAtt": [
+      "DataKey17AFBB84",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/DataKey/Alias/Resource"
+   }
+  },
+  "OrdersA9B65338": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "customer_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "order_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "KeySchema": [
+     {
+      "AttributeName": "customer_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "order_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "csagent-prod-orders",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Orders/Resource"
+   }
+  },
+  "Returns425A41DA": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "customer_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "return_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "status-index",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "customer_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "return_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "csagent-prod-returns",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Returns/Resource"
+   }
+  },
+  "Tickets83B11BB2": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "customer_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "ticket_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "status-index",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "customer_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "ticket_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "csagent-prod-tickets",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Tickets/Resource"
+   }
+  },
+  "IdempotencyC15CBC33": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "idempotency_key",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "KeySchema": [
+     {
+      "AttributeName": "idempotency_key",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "csagent-prod-idempotency",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "TimeToLiveSpecification": {
+     "AttributeName": "expires_at",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Idempotency/Resource"
+   }
+  },
+  "Audit3D8ADE0A": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "entity_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "event_ts",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "KeySchema": [
+     {
+      "AttributeName": "entity_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "event_ts",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "StreamSpecification": {
+     "StreamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "TableName": "csagent-prod-audit",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Audit/Resource"
+   }
+  },
+  "LedgerB7379752": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "idempotency_key",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "DeletionProtectionEnabled": true,
+    "KeySchema": [
+     {
+      "AttributeName": "idempotency_key",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": true
+    },
+    "SSESpecification": {
+     "KMSMasterKeyId": {
+      "Fn::GetAtt": [
+       "DataKey17AFBB84",
+       "Arn"
+      ]
+     },
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "csagent-prod-ledger",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/Ledger/Resource"
+   }
+  },
+  "RateLimit4AEB4E56": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "bucket",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "bucket",
+      "KeyType": "HASH"
+     }
+    ],
+    "TableName": "csagent-prod-ratelimit",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "TimeToLiveSpecification": {
+     "AttributeName": "expires_at",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/RateLimit/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWJuQ7CMBAFvyW9syShSI0oaVBCj9YHwviSso4iy/K/IxtRzbx5E4zzAEOHB/VCmt5qDnmNKAzDg57ZOIJ8U4ldX77iYjVSHU0Kk8mjC5JDfiC3qj5NSmGLorBvorW/F3ZP8R386QzjBHP3Ia37bfdROwXLj1+fBq67kwAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-data/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DataKey17AFBB84",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6"
+   }
+  },
+  "ExportsOutputFnGetAttOrdersA9B65338Arn17F87B9C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "OrdersA9B65338",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttOrdersA9B65338Arn17F87B9C"
+   }
+  },
+  "ExportsOutputFnGetAttReturns425A41DAArn74243845": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Returns425A41DA",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+   }
+  },
+  "ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Tickets83B11BB2",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67"
+   }
+  },
+  "ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F": {
+   "Value": {
+    "Fn::GetAtt": [
+     "IdempotencyC15CBC33",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F"
+   }
+  },
+  "ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565": {
+   "Value": {
+    "Fn::GetAtt": [
+     "Audit3D8ADE0A",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565"
+   }
+  },
+  "ExportsOutputRefOrdersA9B6533847015BBC": {
+   "Value": {
+    "Ref": "OrdersA9B65338"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefOrdersA9B6533847015BBC"
+   }
+  },
+  "ExportsOutputRefReturns425A41DAB34B5FC5": {
+   "Value": {
+    "Ref": "Returns425A41DA"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefReturns425A41DAB34B5FC5"
+   }
+  },
+  "ExportsOutputRefTickets83B11BB261DD1E94": {
+   "Value": {
+    "Ref": "Tickets83B11BB2"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefTickets83B11BB261DD1E94"
+   }
+  },
+  "ExportsOutputRefIdempotencyC15CBC335C6F7F1B": {
+   "Value": {
+    "Ref": "IdempotencyC15CBC33"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefIdempotencyC15CBC335C6F7F1B"
+   }
+  },
+  "ExportsOutputRefAudit3D8ADE0A2C94B8B5": {
+   "Value": {
+    "Ref": "Audit3D8ADE0A"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefAudit3D8ADE0A2C94B8B5"
+   }
+  },
+  "ExportsOutputRefLedgerB73797523D89D608": {
+   "Value": {
+    "Ref": "LedgerB7379752"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefLedgerB73797523D89D608"
+   }
+  },
+  "ExportsOutputFnGetAttLedgerB7379752Arn8FB7B3DC": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LedgerB7379752",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttLedgerB7379752Arn8FB7B3DC"
+   }
+  },
+  "ExportsOutputFnGetAttRateLimit4AEB4E56Arn4472503E": {
+   "Value": {
+    "Fn::GetAtt": [
+     "RateLimit4AEB4E56",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputFnGetAttRateLimit4AEB4E56Arn4472503E"
+   }
+  },
+  "ExportsOutputRefRateLimit4AEB4E56E043BCD3": {
+   "Value": {
+    "Ref": "RateLimit4AEB4E56"
+   },
+   "Export": {
+    "Name": "csagent-prod-data:ExportsOutputRefRateLimit4AEB4E56E043BCD3"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,6158 @@
+{
+ "Resources": {
+  "HealthLogs34B37038": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-health",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/HealthLogs/Resource"
+   }
+  },
+  "HealthServiceRoleB029CDB4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Health/ServiceRole/Resource"
+   }
+  },
+  "HealthServiceRoleDefaultPolicyDE9A25F0": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "HealthServiceRoleDefaultPolicyDE9A25F0",
+    "Roles": [
+     {
+      "Ref": "HealthServiceRoleB029CDB4"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Health/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "Health02A586CD": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "97692fbde633d517ee61b4036c48fd091673156139aa9ccf6b263249b5bad6a0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod"
+     }
+    },
+    "FunctionName": "csagent-prod-health",
+    "Handler": "handlers.edge.health",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "HealthLogs34B37038"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "HealthServiceRoleB029CDB4",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 10,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "HealthServiceRoleDefaultPolicyDE9A25F0",
+    "HealthServiceRoleB029CDB4"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Health/Resource",
+    "aws:asset:path": "asset.97692fbde633d517ee61b4036c48fd091673156139aa9ccf6b263249b5bad6a0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "WhoamiLogsA3D74F2F": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-whoami",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/WhoamiLogs/Resource"
+   }
+  },
+  "WhoamiServiceRole22C0359B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Whoami/ServiceRole/Resource"
+   }
+  },
+  "WhoamiServiceRoleDefaultPolicy856DFEEA": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "WhoamiServiceRoleDefaultPolicy856DFEEA",
+    "Roles": [
+     {
+      "Ref": "WhoamiServiceRole22C0359B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Whoami/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "Whoami7748E0D8": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "97692fbde633d517ee61b4036c48fd091673156139aa9ccf6b263249b5bad6a0.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod"
+     }
+    },
+    "FunctionName": "csagent-prod-whoami",
+    "Handler": "handlers.edge.whoami",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "WhoamiLogsA3D74F2F"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "WhoamiServiceRole22C0359B",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 10,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "WhoamiServiceRoleDefaultPolicy856DFEEA",
+    "WhoamiServiceRole22C0359B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Whoami/Resource",
+    "aws:asset:path": "asset.97692fbde633d517ee61b4036c48fd091673156139aa9ccf6b263249b5bad6a0",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AccessLogs8B620ECA": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/AccessLogs/Resource"
+   }
+  },
+  "ApiF70053CD": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Customer service platform edge API",
+    "EndpointConfiguration": {
+     "Types": [
+      "REGIONAL"
+     ]
+    },
+    "Name": "csagent-prod-api",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Resource"
+   }
+  },
+  "ApiCloudWatchRole73EC6FC4": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/CloudWatchRole/Resource"
+   }
+  },
+  "ApiAccountA18C9B29": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "ApiCloudWatchRole73EC6FC4",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "ApiF70053CD"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Account"
+   }
+  },
+  "ApiDeploymentB17BE62Dd405f96a39957c6d1a56ba2f1c7dfbb9": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Customer service platform edge API",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "DependsOn": [
+    "ApihealthGET8A9DC1E4",
+    "ApihealthOPTIONS119B6E46",
+    "Apihealth5CB7A415",
+    "ApiOPTIONS5886EA5D",
+    "Apiv1opsapprovalsGET5B3E67BF",
+    "Apiv1opsapprovalsOPTIONS74857E14",
+    "Apiv1opsapprovalsDE685346",
+    "Apiv1opsOPTIONS3E1893B1",
+    "Apiv1ops29E6FD9C",
+    "Apiv1opsreturnscustomeridreturniddecisionOPTIONSF0285961",
+    "Apiv1opsreturnscustomeridreturniddecisionPOST2FBE0D18",
+    "Apiv1opsreturnscustomeridreturniddecisionC94FB567",
+    "Apiv1opsreturnscustomeridreturnidOPTIONSAFBD515B",
+    "Apiv1opsreturnscustomeridreturnidF1A1E884",
+    "Apiv1opsreturnscustomeridOPTIONS767D5E76",
+    "Apiv1opsreturnscustomerid522989DA",
+    "Apiv1opsreturnsOPTIONSF9CBDD93",
+    "Apiv1opsreturnsC3AB9202",
+    "Apiv1opsticketscustomeridticketidOPTIONS2F18654C",
+    "Apiv1opsticketscustomeridticketidresolveOPTIONSE675319C",
+    "Apiv1opsticketscustomeridticketidresolvePOST15106C42",
+    "Apiv1opsticketscustomeridticketidresolve273BE427",
+    "Apiv1opsticketscustomeridticketid411E2BED",
+    "Apiv1opsticketscustomeridOPTIONSEA083CE6",
+    "Apiv1opsticketscustomerid67D2EB0B",
+    "Apiv1opsticketsGETAC77C890",
+    "Apiv1opsticketsOPTIONS947A06F2",
+    "Apiv1opsticketsC74D9B11",
+    "Apiv1OPTIONSE755CB03",
+    "Apiv1ordersorderidGETE2908A20",
+    "Apiv1ordersorderidOPTIONSDDEF77A6",
+    "Apiv1ordersorderid67BF14E2",
+    "Apiv1ordersorderidreturneligibilityGET546254AE",
+    "Apiv1ordersorderidreturneligibilityOPTIONSC2E8A373",
+    "Apiv1ordersorderidreturneligibilityCDA33E59",
+    "Apiv1ordersorderidshipmentGETDCAEE99D",
+    "Apiv1ordersorderidshipmentOPTIONS45DF0266",
+    "Apiv1ordersorderidshipment5D41F1F3",
+    "Apiv1ordersGET244035C8",
+    "Apiv1ordersOPTIONS09EF31FB",
+    "Apiv1orders8BA33EA7",
+    "Apiv1D42035C8",
+    "Apiv1returnsreturnidGET65286F13",
+    "Apiv1returnsreturnidOPTIONS1A9684EB",
+    "Apiv1returnsreturnid81B3FEE5",
+    "Apiv1returnsOPTIONS80A2867F",
+    "Apiv1returnsPOST5E8D6750",
+    "Apiv1returnsC2B25872",
+    "Apiv1ticketsticketidescalateOPTIONS29D874F4",
+    "Apiv1ticketsticketidescalatePOSTA2812F6B",
+    "Apiv1ticketsticketidescalateDDDBF0F1",
+    "Apiv1ticketsticketidOPTIONS82019A1D",
+    "Apiv1ticketsticketid1CBE414B",
+    "Apiv1ticketsOPTIONS80A9D45C",
+    "Apiv1ticketsPOSTB5C9F9FE",
+    "Apiv1ticketsF814FF67",
+    "Apiv1whoamiGETF6273AF4",
+    "Apiv1whoamiOPTIONS9A5E37D4",
+    "Apiv1whoami4DECF455",
+    "DecisionModelDF8131F9",
+    "EscalateModel5E1F156A",
+    "ReturnModelF2CF61AA",
+    "TicketModelB3767CD8",
+    "Validator9353A022"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Deployment/Resource"
+   }
+  },
+  "ApiDeploymentStageprod3EB9684E": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "AccessLogSetting": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "AccessLogs8B620ECA",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+    },
+    "DeploymentId": {
+     "Ref": "ApiDeploymentB17BE62Dd405f96a39957c6d1a56ba2f1c7dfbb9"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": false,
+      "HttpMethod": "*",
+      "LoggingLevel": "ERROR",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 400,
+      "ThrottlingRateLimit": 200
+     }
+    ],
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "StageName": "prod",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "TracingEnabled": true
+   },
+   "DependsOn": [
+    "ApiAccountA18C9B29"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/DeploymentStage.prod/Resource"
+   }
+  },
+  "ApiOPTIONS5886EA5D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "ApiF70053CD",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/OPTIONS/Resource"
+   }
+  },
+  "Apihealth5CB7A415": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "ApiF70053CD",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "health",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/health/Resource"
+   }
+  },
+  "ApihealthOPTIONS119B6E46": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apihealth5CB7A415"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/health/OPTIONS/Resource"
+   }
+  },
+  "ApihealthGETApiPermissioncsagentprodapiApiF2BAAAC1GEThealthE34F5206": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "Health02A586CD",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/health/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..health"
+   }
+  },
+  "ApihealthGETApiPermissionTestcsagentprodapiApiF2BAAAC1GEThealthDE6E24D7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "Health02A586CD",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/health"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/health/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..health"
+   }
+  },
+  "ApihealthGET8A9DC1E4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "Health02A586CD",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "Apihealth5CB7A415"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/health/GET/Resource"
+   }
+  },
+  "Apiv1D42035C8": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "ApiF70053CD",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "v1",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/Resource"
+   }
+  },
+  "Apiv1OPTIONSE755CB03": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/OPTIONS/Resource"
+   }
+  },
+  "Apiv1whoami4DECF455": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "PathPart": "whoami",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/whoami/Resource"
+   }
+  },
+  "Apiv1whoamiOPTIONS9A5E37D4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1whoami4DECF455"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/whoami/OPTIONS/Resource"
+   }
+  },
+  "Apiv1whoamiGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1whoamiC87CFFBD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "Whoami7748E0D8",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/whoami"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/whoami/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.whoami"
+   }
+  },
+  "Apiv1whoamiGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1whoamiF783B55E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "Whoami7748E0D8",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/whoami"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/whoami/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.whoami"
+   }
+  },
+  "Apiv1whoamiGETF6273AF4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "Whoami7748E0D8",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1whoami4DECF455"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/whoami/GET/Resource"
+   }
+  },
+  "Apiv1orders8BA33EA7": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "PathPart": "orders",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/Resource"
+   }
+  },
+  "Apiv1ordersOPTIONS09EF31FB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1orders8BA33EA7"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ordersGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1ordersCA134291": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.orders"
+   }
+  },
+  "Apiv1ordersGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1ordersB442C9E7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/orders"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.orders"
+   }
+  },
+  "Apiv1ordersGET244035C8": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1orders8BA33EA7"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/GET/Resource"
+   }
+  },
+  "Apiv1ordersorderid67BF14E2": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1orders8BA33EA7"
+    },
+    "PathPart": "{order_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/Resource"
+   }
+  },
+  "Apiv1ordersorderidOPTIONSDDEF77A6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderid67BF14E2"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ordersorderidGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1ordersorderidA467B224": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/orders/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}"
+   }
+  },
+  "Apiv1ordersorderidGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1ordersorderidA994C1B4": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/orders/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}"
+   }
+  },
+  "Apiv1ordersorderidGETE2908A20": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderid67BF14E2"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/GET/Resource"
+   }
+  },
+  "Apiv1ordersorderidshipment5D41F1F3": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ordersorderid67BF14E2"
+    },
+    "PathPart": "shipment",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/shipment/Resource"
+   }
+  },
+  "Apiv1ordersorderidshipmentOPTIONS45DF0266": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderidshipment5D41F1F3"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/shipment/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ordersorderidshipmentGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1ordersorderidshipment0DB5A391": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/orders/*/shipment"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/shipment/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}.shipment"
+   }
+  },
+  "Apiv1ordersorderidshipmentGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1ordersorderidshipment0FEC67C7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/orders/*/shipment"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/shipment/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}.shipment"
+   }
+  },
+  "Apiv1ordersorderidshipmentGETDCAEE99D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderidshipment5D41F1F3"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/shipment/GET/Resource"
+   }
+  },
+  "Apiv1ordersorderidreturneligibilityCDA33E59": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ordersorderid67BF14E2"
+    },
+    "PathPart": "return-eligibility",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/return-eligibility/Resource"
+   }
+  },
+  "Apiv1ordersorderidreturneligibilityOPTIONSC2E8A373": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderidreturneligibilityCDA33E59"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/return-eligibility/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ordersorderidreturneligibilityGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1ordersorderidreturneligibility72DB8AE7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/orders/*/return-eligibility"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/return-eligibility/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}.return-eligibility"
+   }
+  },
+  "Apiv1ordersorderidreturneligibilityGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1ordersorderidreturneligibilityC2A23BD6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/orders/*/return-eligibility"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/return-eligibility/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.orders.{order_id}.return-eligibility"
+   }
+  },
+  "Apiv1ordersorderidreturneligibilityGET546254AE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1ordersorderidreturneligibilityCDA33E59"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/orders/{order_id}/return-eligibility/GET/Resource"
+   }
+  },
+  "Apiv1returnsC2B25872": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "PathPart": "returns",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/Resource"
+   }
+  },
+  "Apiv1returnsOPTIONS80A2867F": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1returnsC2B25872"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/OPTIONS/Resource"
+   }
+  },
+  "Apiv1returnsPOSTApiPermissioncsagentprodapiApiF2BAAAC1POSTv1returns3FC83CE6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/POST/v1/returns"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/POST/ApiPermission.csagentprodapiApiF2BAAAC1.POST..v1.returns"
+   }
+  },
+  "Apiv1returnsPOSTApiPermissionTestcsagentprodapiApiF2BAAAC1POSTv1returns3F0A2325": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/POST/v1/returns"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/POST/ApiPermission.Test.csagentprodapiApiF2BAAAC1.POST..v1.returns"
+   }
+  },
+  "Apiv1returnsPOST5E8D6750": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "ReturnModelF2CF61AA"
+     }
+    },
+    "RequestParameters": {
+     "method.request.header.Idempotency-Key": true
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1returnsC2B25872"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/POST/Resource"
+   }
+  },
+  "Apiv1returnsreturnid81B3FEE5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1returnsC2B25872"
+    },
+    "PathPart": "{return_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/{return_id}/Resource"
+   }
+  },
+  "Apiv1returnsreturnidOPTIONS1A9684EB": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1returnsreturnid81B3FEE5"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/{return_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1returnsreturnidGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1returnsreturnid02A5A133": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/returns/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/{return_id}/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.returns.{return_id}"
+   }
+  },
+  "Apiv1returnsreturnidGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1returnsreturnidD900A95C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/returns/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/{return_id}/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.returns.{return_id}"
+   }
+  },
+  "Apiv1returnsreturnidGET65286F13": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1returnsreturnid81B3FEE5"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/returns/{return_id}/GET/Resource"
+   }
+  },
+  "Apiv1ticketsF814FF67": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "PathPart": "tickets",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/Resource"
+   }
+  },
+  "Apiv1ticketsOPTIONS80A9D45C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ticketsF814FF67"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ticketsPOSTApiPermissioncsagentprodapiApiF2BAAAC1POSTv1tickets8AB031E1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/POST/v1/tickets"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/POST/ApiPermission.csagentprodapiApiF2BAAAC1.POST..v1.tickets"
+   }
+  },
+  "Apiv1ticketsPOSTApiPermissionTestcsagentprodapiApiF2BAAAC1POSTv1tickets4A57DE17": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/POST/v1/tickets"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/POST/ApiPermission.Test.csagentprodapiApiF2BAAAC1.POST..v1.tickets"
+   }
+  },
+  "Apiv1ticketsPOSTB5C9F9FE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "TicketModelB3767CD8"
+     }
+    },
+    "RequestParameters": {
+     "method.request.header.Idempotency-Key": true
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1ticketsF814FF67"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/POST/Resource"
+   }
+  },
+  "Apiv1ticketsticketid1CBE414B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ticketsF814FF67"
+    },
+    "PathPart": "{ticket_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/Resource"
+   }
+  },
+  "Apiv1ticketsticketidOPTIONS82019A1D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ticketsticketid1CBE414B"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ticketsticketidescalateDDDBF0F1": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ticketsticketid1CBE414B"
+    },
+    "PathPart": "escalate",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/escalate/Resource"
+   }
+  },
+  "Apiv1ticketsticketidescalateOPTIONS29D874F4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ticketsticketidescalateDDDBF0F1"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/escalate/OPTIONS/Resource"
+   }
+  },
+  "Apiv1ticketsticketidescalatePOSTApiPermissioncsagentprodapiApiF2BAAAC1POSTv1ticketsticketidescalateC274F1A5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/POST/v1/tickets/*/escalate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/escalate/POST/ApiPermission.csagentprodapiApiF2BAAAC1.POST..v1.tickets.{ticket_id}.escalate"
+   }
+  },
+  "Apiv1ticketsticketidescalatePOSTApiPermissionTestcsagentprodapiApiF2BAAAC1POSTv1ticketsticketidescalate08F1E7DC": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiD0765348",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/POST/v1/tickets/*/escalate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/escalate/POST/ApiPermission.Test.csagentprodapiApiF2BAAAC1.POST..v1.tickets.{ticket_id}.escalate"
+   }
+  },
+  "Apiv1ticketsticketidescalatePOSTA2812F6B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendCustomerApiD0765348",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "EscalateModel5E1F156A"
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1ticketsticketidescalateDDDBF0F1"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/tickets/{ticket_id}/escalate/POST/Resource"
+   }
+  },
+  "Apiv1ops29E6FD9C": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1D42035C8"
+    },
+    "PathPart": "ops",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/Resource"
+   }
+  },
+  "Apiv1opsOPTIONS3E1893B1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1ops29E6FD9C"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsapprovalsDE685346": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ops29E6FD9C"
+    },
+    "PathPart": "approvals",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/approvals/Resource"
+   }
+  },
+  "Apiv1opsapprovalsOPTIONS74857E14": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsapprovalsDE685346"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/approvals/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsapprovalsGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1opsapprovalsB9FFF2A9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/ops/approvals"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/approvals/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.ops.approvals"
+   }
+  },
+  "Apiv1opsapprovalsGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1opsapprovals282AE944": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/ops/approvals"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/approvals/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.ops.approvals"
+   }
+  },
+  "Apiv1opsapprovalsGET5B3E67BF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendOpsApi3EF1B580",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1opsapprovalsDE685346"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/approvals/GET/Resource"
+   }
+  },
+  "Apiv1opsticketsC74D9B11": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ops29E6FD9C"
+    },
+    "PathPart": "tickets",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/Resource"
+   }
+  },
+  "Apiv1opsticketsOPTIONS947A06F2": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsticketsC74D9B11"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsticketsGETApiPermissioncsagentprodapiApiF2BAAAC1GETv1opsticketsE32D13B3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/GET/v1/ops/tickets"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/GET/ApiPermission.csagentprodapiApiF2BAAAC1.GET..v1.ops.tickets"
+   }
+  },
+  "Apiv1opsticketsGETApiPermissionTestcsagentprodapiApiF2BAAAC1GETv1opstickets006F93F2": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/GET/v1/ops/tickets"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/GET/ApiPermission.Test.csagentprodapiApiF2BAAAC1.GET..v1.ops.tickets"
+   }
+  },
+  "Apiv1opsticketsGETAC77C890": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendOpsApi3EF1B580",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1opsticketsC74D9B11"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/GET/Resource"
+   }
+  },
+  "Apiv1opsticketscustomerid67D2EB0B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsticketsC74D9B11"
+    },
+    "PathPart": "{customer_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridOPTIONSEA083CE6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsticketscustomerid67D2EB0B"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridticketid411E2BED": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsticketscustomerid67D2EB0B"
+    },
+    "PathPart": "{ticket_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidOPTIONS2F18654C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsticketscustomeridticketid411E2BED"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidresolve273BE427": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsticketscustomeridticketid411E2BED"
+    },
+    "PathPart": "resolve",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/resolve/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidresolveOPTIONSE675319C": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsticketscustomeridticketidresolve273BE427"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/resolve/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidresolvePOSTApiPermissioncsagentprodapiApiF2BAAAC1POSTv1opsticketscustomeridticketidresolve5034F8B7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/POST/v1/ops/tickets/*/*/resolve"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/resolve/POST/ApiPermission.csagentprodapiApiF2BAAAC1.POST..v1.ops.tickets.{customer_id}.{ticket_id}.resolve"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidresolvePOSTApiPermissionTestcsagentprodapiApiF2BAAAC1POSTv1opsticketscustomeridticketidresolve3BABAFF3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/POST/v1/ops/tickets/*/*/resolve"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/resolve/POST/ApiPermission.Test.csagentprodapiApiF2BAAAC1.POST..v1.ops.tickets.{customer_id}.{ticket_id}.resolve"
+   }
+  },
+  "Apiv1opsticketscustomeridticketidresolvePOST15106C42": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendOpsApi3EF1B580",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1opsticketscustomeridticketidresolve273BE427"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/tickets/{customer_id}/{ticket_id}/resolve/POST/Resource"
+   }
+  },
+  "Apiv1opsreturnsC3AB9202": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1ops29E6FD9C"
+    },
+    "PathPart": "returns",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/Resource"
+   }
+  },
+  "Apiv1opsreturnsOPTIONSF9CBDD93": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsreturnsC3AB9202"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomerid522989DA": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsreturnsC3AB9202"
+    },
+    "PathPart": "{customer_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridOPTIONS767D5E76": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsreturnscustomerid522989DA"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturnidF1A1E884": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsreturnscustomerid522989DA"
+    },
+    "PathPart": "{return_id}",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturnidOPTIONSAFBD515B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsreturnscustomeridreturnidF1A1E884"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturniddecisionC94FB567": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "Apiv1opsreturnscustomeridreturnidF1A1E884"
+    },
+    "PathPart": "decision",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/decision/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturniddecisionOPTIONSF0285961": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Authorization,Content-Type,Idempotency-Key'",
+        "method.response.header.Access-Control-Allow-Origin": {
+         "Fn::Join": [
+          "",
+          [
+           "'https://",
+           {
+            "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+           },
+           "'"
+          ]
+         ]
+        },
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "Apiv1opsreturnscustomeridreturniddecisionC94FB567"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/decision/OPTIONS/Resource"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturniddecisionPOSTApiPermissioncsagentprodapiApiF2BAAAC1POSTv1opsreturnscustomeridreturniddecision86ABCC8C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/POST/v1/ops/returns/*/*/decision"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/decision/POST/ApiPermission.csagentprodapiApiF2BAAAC1.POST..v1.ops.returns.{customer_id}.{return_id}.decision"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturniddecisionPOSTApiPermissionTestcsagentprodapiApiF2BAAAC1POSTv1opsreturnscustomeridreturniddecisionBF810457": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendOpsApi3EF1B580",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:542879660427:",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/test-invoke-stage/POST/v1/ops/returns/*/*/decision"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/decision/POST/ApiPermission.Test.csagentprodapiApiF2BAAAC1.POST..v1.ops.returns.{customer_id}.{return_id}.decision"
+   }
+  },
+  "Apiv1opsreturnscustomeridreturniddecisionPOST2FBE0D18": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "AuthorizerBD825682"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "BackendOpsApi3EF1B580",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestModels": {
+     "application/json": {
+      "Ref": "DecisionModelDF8131F9"
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "Validator9353A022"
+    },
+    "ResourceId": {
+     "Ref": "Apiv1opsreturnscustomeridreturniddecisionC94FB567"
+    },
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/Default/v1/ops/returns/{customer_id}/{return_id}/decision/POST/Resource"
+   }
+  },
+  "ApiUsagePlanDBBE8AB1": {
+   "Type": "AWS::ApiGateway::UsagePlan",
+   "Properties": {
+    "ApiStages": [
+     {
+      "ApiId": {
+       "Ref": "ApiF70053CD"
+      },
+      "Stage": {
+       "Ref": "ApiDeploymentStageprod3EB9684E"
+      },
+      "Throttle": {}
+     }
+    ],
+    "Quota": {
+     "Limit": 4320000,
+     "Period": "DAY"
+    },
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Throttle": {
+     "BurstLimit": 400,
+     "RateLimit": 200
+    },
+    "UsagePlanName": "csagent-prod-usage"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api/UsagePlan/Resource"
+   }
+  },
+  "AuthorizerBD825682": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "AuthorizerResultTtlInSeconds": 300,
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "csagentprodapiAuthorizer97F923A0",
+    "ProviderARNs": [
+     {
+      "Fn::ImportValue": "csagent-prod-auth:ExportsOutputFnGetAttUserPool6BA7E5F2Arn686ACC00"
+     }
+    ],
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Authorizer/Resource"
+   }
+  },
+  "Validator9353A022": {
+   "Type": "AWS::ApiGateway::RequestValidator",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "ValidateRequestBody": true,
+    "ValidateRequestParameters": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Validator/Resource"
+   }
+  },
+  "BackendRefundDlqE1BDFAD7": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "csagent-prod-refund-dlq",
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundDlq/Resource"
+   }
+  },
+  "BackendRefundDlqPolicyC880F961": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundDlqE1BDFAD7",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "BackendRefundDlqE1BDFAD7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundDlq/Policy/Resource"
+   }
+  },
+  "BackendRefundQueueFE5C08CC": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "QueueName": "csagent-prod-refund-queue",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "BackendRefundDlqE1BDFAD7",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 5
+    },
+    "SqsManagedSseEnabled": true,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "VisibilityTimeout": 180
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundQueue/Resource"
+   }
+  },
+  "BackendRefundQueuePolicyB067C78A": {
+   "Type": "AWS::SQS::QueuePolicy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sqs:*",
+       "Condition": {
+        "Bool": {
+         "aws:SecureTransport": "false"
+        }
+       },
+       "Effect": "Deny",
+       "Principal": {
+        "AWS": "*"
+       },
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundQueueFE5C08CC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Queues": [
+     {
+      "Ref": "BackendRefundQueueFE5C08CC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundQueue/Policy/Resource"
+   }
+  },
+  "BackendCustomerApiLogs1CFAE278": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-customerapi",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/CustomerApiLogs/Resource"
+   }
+  },
+  "BackendCustomerApiServiceRole9E88CE24": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/CustomerApi/ServiceRole/Resource"
+   }
+  },
+  "BackendCustomerApiServiceRoleDefaultPolicyDA4273B8": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*",
+        "kms:ReEncrypt*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttOrdersA9B65338Arn17F87B9C"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": "dynamodb:PutItem",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:SendMessage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundQueueFE5C08CC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BackendCustomerApiServiceRoleDefaultPolicyDA4273B8",
+    "Roles": [
+     {
+      "Ref": "BackendCustomerApiServiceRole9E88CE24"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/CustomerApi/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "BackendCustomerApiD0765348": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod",
+      "ORDERS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefOrdersA9B6533847015BBC"
+      },
+      "RETURNS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefReturns425A41DAB34B5FC5"
+      },
+      "TICKETS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefTickets83B11BB261DD1E94"
+      },
+      "IDEMPOTENCY_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefIdempotencyC15CBC335C6F7F1B"
+      },
+      "AUDIT_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefAudit3D8ADE0A2C94B8B5"
+      },
+      "LEDGER_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefLedgerB73797523D89D608"
+      },
+      "REFUND_QUEUE_URL": {
+       "Ref": "BackendRefundQueueFE5C08CC"
+      },
+      "ALLOWED_ORIGINS": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+         }
+        ]
+       ]
+      }
+     }
+    },
+    "FunctionName": "csagent-prod-customerapi",
+    "Handler": "bizapi.customer_api.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "BackendCustomerApiLogs1CFAE278"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "BackendCustomerApiServiceRole9E88CE24",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 15,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "BackendCustomerApiServiceRoleDefaultPolicyDA4273B8",
+    "BackendCustomerApiServiceRole9E88CE24"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/CustomerApi/Resource",
+    "aws:asset:path": "asset.9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BackendOpsApiLogs82682176": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-opsapi",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/OpsApiLogs/Resource"
+   }
+  },
+  "BackendOpsApiServiceRole55945D92": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/OpsApi/ServiceRole/Resource"
+   }
+  },
+  "BackendOpsApiServiceRoleDefaultPolicyBB8E7A0C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*",
+        "kms:ReEncrypt*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttTickets83B11BB2Arn032E7E67"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": "dynamodb:PutItem",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:SendMessage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundQueueFE5C08CC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BackendOpsApiServiceRoleDefaultPolicyBB8E7A0C",
+    "Roles": [
+     {
+      "Ref": "BackendOpsApiServiceRole55945D92"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/OpsApi/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "BackendOpsApi3EF1B580": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod",
+      "ORDERS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefOrdersA9B6533847015BBC"
+      },
+      "RETURNS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefReturns425A41DAB34B5FC5"
+      },
+      "TICKETS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefTickets83B11BB261DD1E94"
+      },
+      "IDEMPOTENCY_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefIdempotencyC15CBC335C6F7F1B"
+      },
+      "AUDIT_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefAudit3D8ADE0A2C94B8B5"
+      },
+      "LEDGER_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefLedgerB73797523D89D608"
+      },
+      "REFUND_QUEUE_URL": {
+       "Ref": "BackendRefundQueueFE5C08CC"
+      },
+      "ALLOWED_ORIGINS": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+         }
+        ]
+       ]
+      }
+     }
+    },
+    "FunctionName": "csagent-prod-opsapi",
+    "Handler": "bizapi.ops_api.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "BackendOpsApiLogs82682176"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "BackendOpsApiServiceRole55945D92",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 15,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "BackendOpsApiServiceRoleDefaultPolicyBB8E7A0C",
+    "BackendOpsApiServiceRole55945D92"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/OpsApi/Resource",
+    "aws:asset:path": "asset.9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BackendRefundWorkerLogs3D5AAD46": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-refundworker",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorkerLogs/Resource"
+   }
+  },
+  "BackendRefundWorkerServiceRoleB1631BC6": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorker/ServiceRole/Resource"
+   }
+  },
+  "BackendRefundWorkerServiceRoleDefaultPolicy44240099": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*",
+        "kms:ReEncrypt*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttOrdersA9B65338Arn17F87B9C"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": "dynamodb:PutItem",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttLedgerB7379752Arn8FB7B3DC"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "sqs:ChangeMessageVisibility",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:ReceiveMessage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundQueueFE5C08CC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BackendRefundWorkerServiceRoleDefaultPolicy44240099",
+    "Roles": [
+     {
+      "Ref": "BackendRefundWorkerServiceRoleB1631BC6"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorker/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "BackendRefundWorkerD0CE71F4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod",
+      "ORDERS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefOrdersA9B6533847015BBC"
+      },
+      "RETURNS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefReturns425A41DAB34B5FC5"
+      },
+      "TICKETS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefTickets83B11BB261DD1E94"
+      },
+      "IDEMPOTENCY_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefIdempotencyC15CBC335C6F7F1B"
+      },
+      "AUDIT_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefAudit3D8ADE0A2C94B8B5"
+      },
+      "LEDGER_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefLedgerB73797523D89D608"
+      },
+      "REFUND_QUEUE_URL": {
+       "Ref": "BackendRefundQueueFE5C08CC"
+      },
+      "ALLOWED_ORIGINS": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+         }
+        ]
+       ]
+      }
+     }
+    },
+    "FunctionName": "csagent-prod-refundworker",
+    "Handler": "bizapi.refund_worker.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "BackendRefundWorkerLogs3D5AAD46"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "BackendRefundWorkerServiceRoleB1631BC6",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "BackendRefundWorkerServiceRoleDefaultPolicy44240099",
+    "BackendRefundWorkerServiceRoleB1631BC6"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorker/Resource",
+    "aws:asset:path": "asset.9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BackendRefundWorkerSqsEventSourcecsagentprodapiBackendRefundQueue9EA262975BC6A4E2": {
+   "Type": "AWS::Lambda::EventSourceMapping",
+   "Properties": {
+    "BatchSize": 5,
+    "EventSourceArn": {
+     "Fn::GetAtt": [
+      "BackendRefundQueueFE5C08CC",
+      "Arn"
+     ]
+    },
+    "FunctionName": {
+     "Ref": "BackendRefundWorkerD0CE71F4"
+    },
+    "FunctionResponseTypes": [
+     "ReportBatchItemFailures"
+    ],
+    "ScalingConfig": {
+     "MaximumConcurrency": 5
+    },
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorker/SqsEventSource:csagentprodapiBackendRefundQueue9EA26297/Resource"
+   }
+  },
+  "BackendSchedulerLogsE4B6C40C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/csagent-prod-scheduler",
+    "RetentionInDays": 365,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/SchedulerLogs/Resource"
+   }
+  },
+  "BackendSchedulerServiceRole28099A21": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     },
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/Scheduler/ServiceRole/Resource"
+   }
+  },
+  "BackendSchedulerServiceRoleDefaultPolicy4CE7E2B3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "kms:Decrypt",
+        "kms:DescribeKey",
+        "kms:Encrypt",
+        "kms:GenerateDataKey*",
+        "kms:ReEncrypt*"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttDataKey17AFBB84ArnCE2A1BC6"
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable",
+        "dynamodb:GetItem",
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttIdempotencyC15CBC33ArnE239456F"
+        },
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttReturns425A41DAArn74243845"
+           },
+           "/index/*"
+          ]
+         ]
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": "dynamodb:PutItem",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "csagent-prod-data:ExportsOutputFnGetAttAudit3D8ADE0AArn5960E565"
+        },
+        {
+         "Ref": "AWS::NoValue"
+        }
+       ]
+      },
+      {
+       "Action": [
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl",
+        "sqs:SendMessage"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "BackendRefundQueueFE5C08CC",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "BackendSchedulerServiceRoleDefaultPolicy4CE7E2B3",
+    "Roles": [
+     {
+      "Ref": "BackendSchedulerServiceRole28099A21"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/Scheduler/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "BackendScheduler4DDCD18D": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Architectures": [
+     "arm64"
+    ],
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-542879660427-us-east-1",
+     "S3Key": "9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "APP_ENV": "prod",
+      "ORDERS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefOrdersA9B6533847015BBC"
+      },
+      "RETURNS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefReturns425A41DAB34B5FC5"
+      },
+      "TICKETS_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefTickets83B11BB261DD1E94"
+      },
+      "IDEMPOTENCY_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefIdempotencyC15CBC335C6F7F1B"
+      },
+      "AUDIT_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefAudit3D8ADE0A2C94B8B5"
+      },
+      "LEDGER_TABLE": {
+       "Fn::ImportValue": "csagent-prod-data:ExportsOutputRefLedgerB73797523D89D608"
+      },
+      "REFUND_QUEUE_URL": {
+       "Ref": "BackendRefundQueueFE5C08CC"
+      },
+      "ALLOWED_ORIGINS": {
+       "Fn::Join": [
+        "",
+        [
+         "https://",
+         {
+          "Fn::ImportValue": "csagent-prod-web-hosting:ExportsOutputFnGetAttDistribution830FAC52DomainNameBEB09E30"
+         }
+        ]
+       ]
+      }
+     }
+    },
+    "FunctionName": "csagent-prod-scheduler",
+    "Handler": "bizapi.scheduler.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "BackendSchedulerLogsE4B6C40C"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "BackendSchedulerServiceRole28099A21",
+      "Arn"
+     ]
+    },
+    "Runtime": "python3.12",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Timeout": 60,
+    "TracingConfig": {
+     "Mode": "Active"
+    },
+    "VpcConfig": {
+     "SecurityGroupIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+      }
+     ],
+     "SubnetIds": [
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+      },
+      {
+       "Fn::ImportValue": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+      }
+     ]
+    }
+   },
+   "DependsOn": [
+    "BackendSchedulerServiceRoleDefaultPolicy4CE7E2B3",
+    "BackendSchedulerServiceRole28099A21"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/Scheduler/Resource",
+    "aws:asset:path": "asset.9a26470a9c7c5f7e49b51d0f240be946a3e0597c54365872e588c190ba6edf3d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "BackendSchedulerRule3F2FBEB0": {
+   "Type": "AWS::Events::Rule",
+   "Properties": {
+    "Name": "csagent-prod-maintenance",
+    "ScheduleExpression": "rate(15 minutes)",
+    "State": "ENABLED",
+    "Targets": [
+     {
+      "Arn": {
+       "Fn::GetAtt": [
+        "BackendScheduler4DDCD18D",
+        "Arn"
+       ]
+      },
+      "Id": "Target0",
+      "RetryPolicy": {
+       "MaximumRetryAttempts": 2
+      }
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/SchedulerRule/Resource"
+   }
+  },
+  "BackendSchedulerRuleAllowEventRulecsagentprodapiBackendSchedulerB3A726A7B61F91B7": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "BackendScheduler4DDCD18D",
+      "Arn"
+     ]
+    },
+    "Principal": "events.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "BackendSchedulerRule3F2FBEB0",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/SchedulerRule/AllowEventRulecsagentprodapiBackendSchedulerB3A726A7"
+   }
+  },
+  "BackendAlarmTopicE22D7264": {
+   "Type": "AWS::SNS::Topic",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "TopicName": "csagent-prod-alarms"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/AlarmTopic/Resource"
+   }
+  },
+  "BackendRefundDlqNotEmptyD9B611A0": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "Refund messages reached the DLQ; investigate before they are lost.",
+    "AlarmName": "csagent-prod-refunddlqnotempty",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "QueueName",
+      "Value": {
+       "Fn::GetAtt": [
+        "BackendRefundDlqE1BDFAD7",
+        "QueueName"
+       ]
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "ApproximateNumberOfMessagesVisible",
+    "Namespace": "AWS/SQS",
+    "Period": 60,
+    "Statistic": "Maximum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundDlqNotEmpty/Resource"
+   }
+  },
+  "BackendCustomerApiErrorsB4B98E12": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "CustomerApi invocation errors",
+    "AlarmName": "csagent-prod-customerapierrors",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "BackendCustomerApiD0765348"
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/CustomerApiErrors/Resource"
+   }
+  },
+  "BackendOpsApiErrors27B0C6D5": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "OpsApi invocation errors",
+    "AlarmName": "csagent-prod-opsapierrors",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "BackendOpsApi3EF1B580"
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/OpsApiErrors/Resource"
+   }
+  },
+  "BackendRefundWorkerErrorsD4A97782": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "RefundWorker invocation errors",
+    "AlarmName": "csagent-prod-refundworkererrors",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "BackendRefundWorkerD0CE71F4"
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/RefundWorkerErrors/Resource"
+   }
+  },
+  "BackendSchedulerErrors778E1E25": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "Scheduler invocation errors",
+    "AlarmName": "csagent-prod-schedulererrors",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "FunctionName",
+      "Value": {
+       "Ref": "BackendScheduler4DDCD18D"
+      }
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "Errors",
+    "Namespace": "AWS/Lambda",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Backend/SchedulerErrors/Resource"
+   }
+  },
+  "ReturnModelF2CF61AA": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "ContentType": "application/json",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "Schema": {
+     "additionalProperties": false,
+     "properties": {
+      "order_id": {
+       "maxLength": 64,
+       "minLength": 1,
+       "type": "string"
+      },
+      "reason": {
+       "maxLength": 1000,
+       "minLength": 1,
+       "type": "string"
+      }
+     },
+     "required": [
+      "order_id",
+      "reason"
+     ],
+     "$schema": "http://json-schema.org/draft-04/schema#",
+     "type": "object"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/ReturnModel/Resource"
+   }
+  },
+  "TicketModelB3767CD8": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "ContentType": "application/json",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "Schema": {
+     "additionalProperties": false,
+     "properties": {
+      "category": {
+       "maxLength": 32,
+       "minLength": 1,
+       "type": "string"
+      },
+      "subject": {
+       "maxLength": 200,
+       "minLength": 1,
+       "type": "string"
+      },
+      "description": {
+       "maxLength": 4000,
+       "minLength": 1,
+       "type": "string"
+      },
+      "related_order_id": {
+       "maxLength": 64,
+       "minLength": 1,
+       "type": "string"
+      }
+     },
+     "required": [
+      "category",
+      "subject",
+      "description"
+     ],
+     "$schema": "http://json-schema.org/draft-04/schema#",
+     "type": "object"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/TicketModel/Resource"
+   }
+  },
+  "EscalateModel5E1F156A": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "ContentType": "application/json",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "Schema": {
+     "additionalProperties": false,
+     "properties": {
+      "summary": {
+       "maxLength": 4000,
+       "minLength": 1,
+       "type": "string"
+      }
+     },
+     "required": [
+      "summary"
+     ],
+     "$schema": "http://json-schema.org/draft-04/schema#",
+     "type": "object"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/EscalateModel/Resource"
+   }
+  },
+  "DecisionModelDF8131F9": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "ContentType": "application/json",
+    "RestApiId": {
+     "Ref": "ApiF70053CD"
+    },
+    "Schema": {
+     "additionalProperties": false,
+     "properties": {
+      "approve": {
+       "type": "boolean"
+      },
+      "note": {
+       "maxLength": 500,
+       "minLength": 0,
+       "type": "string"
+      }
+     },
+     "required": [
+      "approve"
+     ],
+     "$schema": "http://json-schema.org/draft-04/schema#",
+     "type": "object"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/DecisionModel/Resource"
+   }
+  },
+  "Api5xx3D9EE91A": {
+   "Type": "AWS::CloudWatch::Alarm",
+   "Properties": {
+    "AlarmActions": [
+     {
+      "Ref": "BackendAlarmTopicE22D7264"
+     }
+    ],
+    "AlarmDescription": "API Gateway returned 5xx responses",
+    "AlarmName": "csagent-prod-api-5xx",
+    "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+    "Dimensions": [
+     {
+      "Name": "ApiName",
+      "Value": "csagent-prod-api"
+     }
+    ],
+    "EvaluationPeriods": 1,
+    "MetricName": "5XXError",
+    "Namespace": "AWS/ApiGateway",
+    "Period": 300,
+    "Statistic": "Sum",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "Threshold": 1,
+    "TreatMissingData": "notBreaching"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Api5xx/Resource"
+   }
+  },
+  "WebAcl": {
+   "Type": "AWS::WAFv2::WebACL",
+   "Properties": {
+    "DefaultAction": {
+     "Allow": {}
+    },
+    "Name": "csagent-prod-waf",
+    "Rules": [
+     {
+      "Name": "AWSManagedRulesCommonRuleSet",
+      "OverrideAction": {
+       "None": {}
+      },
+      "Priority": 10,
+      "Statement": {
+       "ManagedRuleGroupStatement": {
+        "Name": "AWSManagedRulesCommonRuleSet",
+        "VendorName": "AWS"
+       }
+      },
+      "VisibilityConfig": {
+       "CloudWatchMetricsEnabled": true,
+       "MetricName": "AWSManagedRulesCommonRuleSet",
+       "SampledRequestsEnabled": true
+      }
+     },
+     {
+      "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+      "OverrideAction": {
+       "None": {}
+      },
+      "Priority": 20,
+      "Statement": {
+       "ManagedRuleGroupStatement": {
+        "Name": "AWSManagedRulesKnownBadInputsRuleSet",
+        "VendorName": "AWS"
+       }
+      },
+      "VisibilityConfig": {
+       "CloudWatchMetricsEnabled": true,
+       "MetricName": "AWSManagedRulesKnownBadInputsRuleSet",
+       "SampledRequestsEnabled": true
+      }
+     },
+     {
+      "Name": "AWSManagedRulesAmazonIpReputationList",
+      "OverrideAction": {
+       "None": {}
+      },
+      "Priority": 30,
+      "Statement": {
+       "ManagedRuleGroupStatement": {
+        "Name": "AWSManagedRulesAmazonIpReputationList",
+        "VendorName": "AWS"
+       }
+      },
+      "VisibilityConfig": {
+       "CloudWatchMetricsEnabled": true,
+       "MetricName": "AWSManagedRulesAmazonIpReputationList",
+       "SampledRequestsEnabled": true
+      }
+     },
+     {
+      "Action": {
+       "Block": {}
+      },
+      "Name": "PerIpRateLimit",
+      "Priority": 40,
+      "Statement": {
+       "RateBasedStatement": {
+        "AggregateKeyType": "IP",
+        "Limit": 2000
+       }
+      },
+      "VisibilityConfig": {
+       "CloudWatchMetricsEnabled": true,
+       "MetricName": "PerIpRateLimit",
+       "SampledRequestsEnabled": true
+      }
+     }
+    ],
+    "Scope": "REGIONAL",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "VisibilityConfig": {
+     "CloudWatchMetricsEnabled": true,
+     "MetricName": "csagent-prod-waf",
+     "SampledRequestsEnabled": true
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/WebAcl"
+   }
+  },
+  "WebAclAssociation": {
+   "Type": "AWS::WAFv2::WebACLAssociation",
+   "Properties": {
+    "ResourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":apigateway:us-east-1::/restapis/",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       "/stages/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       }
+      ]
+     ]
+    },
+    "WebACLArn": {
+     "Fn::GetAtt": [
+      "WebAcl",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/WebAclAssociation"
+   }
+  },
+  "ClientapiUrl7E4B8690": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Name": "/csagent/prod/client/apiUrl",
+    "Tags": {
+     "app": "csagent",
+     "environment": "prod",
+     "managed-by": "cdk"
+    },
+    "Type": "String",
+    "Value": {
+     "Fn::Join": [
+      "",
+      [
+       "https://",
+       {
+        "Ref": "ApiF70053CD"
+       },
+       ".execute-api.us-east-1.",
+       {
+        "Ref": "AWS::URLSuffix"
+       },
+       "/",
+       {
+        "Ref": "ApiDeploymentStageprod3EB9684E"
+       },
+       "/"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/Client-apiUrl/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/2WSzXLbMAyEnyV3mk3sQ86K+3OJp6rctMcMTMEya4pQBDAal8N375ByYk9zEb4FONBqxaW+u7/Vtzcw8cK0x4WzOx23AuaoYOLn6KhjHR+p+zZSGNR67984KQf9rgUdvwZvxJLP02uucewtc1ZfXtHLlsJocAPDYH2XD3zsJmWh17Ehh/lAqTU5a05lYaGkePUMzCisq1wUr/RDMEeUB2BUMNgOBCc46dggSzXYsuuClTEUvKjPODg69egld6/UVqArBmZokIvJsn6DcqA2D8/0Nj2/ZOYnhg5rByWIK0Gdt0JPjGNN5LgKcqDR/sWx+LqoBl8CsvwCZ1sQGufl//U21KIrTjIkxS+s44+AoXiZoTwvEV7JpDDnzzo24Rx3cJgUe9bxJw3W5F6BpIyj0E4g5qBj5WDsi98MSU2wf13quN7737ir1o/qnSpmMhbyhUiKuc9Xa7S+q2GEHmX+6neR0iXL8mNz+uer8j3IEOQ64qTqkxzIf1rpu6W+v/nD1i7G4MX2qJu5/gMQ3H1Y3gIAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-api/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ApiEndpoint4F160690": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "ApiF70053CD"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "ApiDeploymentStageprod3EB9684E"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "ApiF70053CD"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "ApiDeploymentStageprod3EB9684E"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A": {
+   "Value": {
+    "Ref": "BackendAlarmTopicE22D7264"
+   },
+   "Export": {
+    "Name": "csagent-prod-api:ExportsOutputRefBackendAlarmTopicE22D72640BAEC89A"
+   }
+  },
+  "ExportsOutputRefApiF70053CD5653BA4D": {
+   "Value": {
+    "Ref": "ApiF70053CD"
+   },
+   "Export": {
+    "Name": "csagent-prod-api:ExportsOutputRefApiF70053CD5653BA4D"
+   }
+  },
+  "ExportsOutputRefApiDeploymentStageprod3EB9684E9290AA51": {
+   "Value": {
+    "Ref": "ApiDeploymentStageprod3EB9684E"
+   },
+   "Export": {
+    "Name": "csagent-prod-api:ExportsOutputRefApiDeploymentStageprod3EB9684E9290AA51"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

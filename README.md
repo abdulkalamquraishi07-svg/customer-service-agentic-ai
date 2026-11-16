@@ -155,3 +155,6 @@ python scripts/seed_data.py --env dev --customer-id <sub>
 
 ## Docs
 - `docs/adr/` architecture decision records
+- `docs/reports/pdf/1-poc-report.pdf`: what was built, tested and measured in dev
+- `docs/reports/pdf/2-production-documentation-pack.pdf`: architecture, operations, security, compliance, AI governance, testing and go-live documents for production (rebuild with `python scripts/build_pdfs.py`)
+- `cloudformation/prod/`: synthesized prod CloudFormation templates (not deployed)

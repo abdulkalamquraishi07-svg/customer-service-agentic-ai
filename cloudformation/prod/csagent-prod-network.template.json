@@ -1,0 +1,944 @@
+{
+ "Resources": {
+  "Vpc8378EB38": {
+   "Type": "AWS::EC2::VPC",
+   "Properties": {
+    "CidrBlock": "10.0.0.0/16",
+    "EnableDnsHostnames": true,
+    "EnableDnsSupport": true,
+    "InstanceTenancy": "default",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-vpc"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/Resource"
+   }
+  },
+  "VpcprivateisolatedSubnet1Subnet24CE21A9": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1a",
+    "CidrBlock": "10.0.0.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private-isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet1/Subnet"
+   }
+  },
+  "VpcprivateisolatedSubnet1RouteTableE4679C7E": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet1"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet1/RouteTable"
+   }
+  },
+  "VpcprivateisolatedSubnet1RouteTableAssociation6DF2F129": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateisolatedSubnet1RouteTableE4679C7E"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet1/RouteTableAssociation"
+   }
+  },
+  "VpcprivateisolatedSubnet2Subnet14FC6BC3": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1b",
+    "CidrBlock": "10.0.1.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private-isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet2/Subnet"
+   }
+  },
+  "VpcprivateisolatedSubnet2RouteTableBE55F435": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet2"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet2/RouteTable"
+   }
+  },
+  "VpcprivateisolatedSubnet2RouteTableAssociation32540CC7": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateisolatedSubnet2RouteTableBE55F435"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet2/RouteTableAssociation"
+   }
+  },
+  "VpcprivateisolatedSubnet3Subnet4376C37C": {
+   "Type": "AWS::EC2::Subnet",
+   "Properties": {
+    "AvailabilityZone": "us-east-1c",
+    "CidrBlock": "10.0.2.0/24",
+    "MapPublicIpOnLaunch": false,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "aws-cdk:subnet-name",
+      "Value": "private-isolated"
+     },
+     {
+      "Key": "aws-cdk:subnet-type",
+      "Value": "Isolated"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet3"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet3/Subnet"
+   }
+  },
+  "VpcprivateisolatedSubnet3RouteTableD10461AF": {
+   "Type": "AWS::EC2::RouteTable",
+   "Properties": {
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/private-isolatedSubnet3"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet3/RouteTable"
+   }
+  },
+  "VpcprivateisolatedSubnet3RouteTableAssociation0E21B5D4": {
+   "Type": "AWS::EC2::SubnetRouteTableAssociation",
+   "Properties": {
+    "RouteTableId": {
+     "Ref": "VpcprivateisolatedSubnet3RouteTableD10461AF"
+    },
+    "SubnetId": {
+     "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/private-isolatedSubnet3/RouteTableAssociation"
+   }
+  },
+  "VpcFlowLogIAMRole6A475D41": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "vpc-flow-logs.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/FlowLog"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/FlowLog/IAMRole/Resource"
+   }
+  },
+  "VpcFlowLogIAMRoleDefaultPolicy406FB995": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "FlowLogs16C1943A",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": "iam:PassRole",
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "VpcFlowLogIAMRole6A475D41",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "VpcFlowLogIAMRoleDefaultPolicy406FB995",
+    "Roles": [
+     {
+      "Ref": "VpcFlowLogIAMRole6A475D41"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/FlowLog/IAMRole/DefaultPolicy/Resource"
+   }
+  },
+  "VpcFlowLog8FF33A73": {
+   "Type": "AWS::EC2::FlowLog",
+   "Properties": {
+    "DeliverLogsPermissionArn": {
+     "Fn::GetAtt": [
+      "VpcFlowLogIAMRole6A475D41",
+      "Arn"
+     ]
+    },
+    "LogDestinationType": "cloud-watch-logs",
+    "LogGroupName": {
+     "Ref": "FlowLogs16C1943A"
+    },
+    "ResourceId": {
+     "Ref": "Vpc8378EB38"
+    },
+    "ResourceType": "VPC",
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     },
+     {
+      "Key": "Name",
+      "Value": "csagent-prod-network/Vpc/FlowLog"
+     }
+    ],
+    "TrafficType": "REJECT"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/FlowLog/FlowLog"
+   }
+  },
+  "VpcDynamoDbEndpoint564903D1": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1RouteTableE4679C7E"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2RouteTableBE55F435"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3RouteTableD10461AF"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".dynamodb"
+      ]
+     ]
+    },
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/DynamoDbEndpoint/Resource"
+   }
+  },
+  "VpcS3Endpoint4A3DE4B5": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "RouteTableIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1RouteTableE4679C7E"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2RouteTableBE55F435"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3RouteTableD10461AF"
+     }
+    ],
+    "ServiceName": {
+     "Fn::Join": [
+      "",
+      [
+       "com.amazonaws.",
+       {
+        "Ref": "AWS::Region"
+       },
+       ".s3"
+      ]
+     ]
+    },
+    "VpcEndpointType": "Gateway",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/S3Endpoint/Resource"
+   }
+  },
+  "VpcBedrockRuntimeEndpoint726DDE28": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.bedrock-runtime",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/BedrockRuntimeEndpoint/Resource"
+   }
+  },
+  "VpcBedrockAgentRuntimeEndpoint70FA5CF0": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.bedrock-agent-runtime",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/BedrockAgentRuntimeEndpoint/Resource"
+   }
+  },
+  "VpcSqsEndpointF1A4587A": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.sqs",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/SqsEndpoint/Resource"
+   }
+  },
+  "VpcSecretsManagerEndpoint93E49F69": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.secretsmanager",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/SecretsManagerEndpoint/Resource"
+   }
+  },
+  "VpcLogsEndpointDA7F7E44": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.logs",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/LogsEndpoint/Resource"
+   }
+  },
+  "VpcKmsEndpoint9ED64100": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.kms",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/KmsEndpoint/Resource"
+   }
+  },
+  "VpcStepFunctionsEndpoint769776C3": {
+   "Type": "AWS::EC2::VPCEndpoint",
+   "Properties": {
+    "PrivateDnsEnabled": true,
+    "SecurityGroupIds": [
+     {
+      "Fn::GetAtt": [
+       "EndpointSg9223A863",
+       "GroupId"
+      ]
+     }
+    ],
+    "ServiceName": "com.amazonaws.us-east-1.states",
+    "SubnetIds": [
+     {
+      "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+     },
+     {
+      "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+     }
+    ],
+    "VpcEndpointType": "Interface",
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/Vpc/StepFunctionsEndpoint/Resource"
+   }
+  },
+  "FlowLogs16C1943A": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "RetentionInDays": 30,
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/FlowLogs/Resource"
+   }
+  },
+  "AppSg898BCA4E": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "Application workloads: no inbound, HTTPS egress to VPC endpoints only",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "Vpc8378EB38",
+        "CidrBlock"
+       ]
+      },
+      "Description": "HTTPS to VPC endpoints",
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/AppSg/Resource"
+   }
+  },
+  "EndpointSg9223A863": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+    "GroupDescription": "VPC interface endpoints",
+    "SecurityGroupEgress": [
+     {
+      "CidrIp": "0.0.0.0/0",
+      "Description": "Allow all outbound traffic by default",
+      "IpProtocol": "-1"
+     }
+    ],
+    "SecurityGroupIngress": [
+     {
+      "CidrIp": {
+       "Fn::GetAtt": [
+        "Vpc8378EB38",
+        "CidrBlock"
+       ]
+      },
+      "Description": {
+       "Fn::Join": [
+        "",
+        [
+         "from ",
+         {
+          "Fn::GetAtt": [
+           "Vpc8378EB38",
+           "CidrBlock"
+          ]
+         },
+         ":443"
+        ]
+       ]
+      },
+      "FromPort": 443,
+      "IpProtocol": "tcp",
+      "ToPort": 443
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "app",
+      "Value": "csagent"
+     },
+     {
+      "Key": "environment",
+      "Value": "prod"
+     },
+     {
+      "Key": "managed-by",
+      "Value": "cdk"
+     }
+    ],
+    "VpcId": {
+     "Ref": "Vpc8378EB38"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/EndpointSg/Resource"
+   }
+  },
+  "EndpointSgfromcsagentprodnetworkAppSgD67CB10E4436A114A90": {
+   "Type": "AWS::EC2::SecurityGroupIngress",
+   "Properties": {
+    "Description": "HTTPS from application workloads",
+    "FromPort": 443,
+    "GroupId": {
+     "Fn::GetAtt": [
+      "EndpointSg9223A863",
+      "GroupId"
+     ]
+    },
+    "IpProtocol": "tcp",
+    "SourceSecurityGroupId": {
+     "Fn::GetAtt": [
+      "AppSg898BCA4E",
+      "GroupId"
+     ]
+    },
+    "ToPort": 443
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/EndpointSg/from csagentprodnetworkAppSgD67CB10E:443"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/32OQW/CMAyFfwv3NIPuwHlCG0LiULVTrygNpjOEuEocqirKf59Kge600/v89OznXK7WS7lcqN5n+njJDDYyVqz0RajeHyLoXMa602JzsnWxEYXDm2KoQmOBR3OmkgLDt2oMzP7sfXhPGhUjWfFlqN9TO8aeuFUMvRrqTn/aY0do+dH4GneWwZ2Uhr+ZCnRwyMPWUejutf8aO9s68D4JVFcZS5pevWtBBvUwjhMlYaj1Mu6pfd16ckqiBE/B6Wn/wUkUA/+QfXuXq1yuF2ePmLlgGa8gy0l/ASf53mBwAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "csagent-prod-network/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F": {
+   "Value": {
+    "Ref": "VpcprivateisolatedSubnet1Subnet24CE21A9"
+   },
+   "Export": {
+    "Name": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet1Subnet24CE21A9CBBC011F"
+   }
+  },
+  "ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA": {
+   "Value": {
+    "Ref": "VpcprivateisolatedSubnet2Subnet14FC6BC3"
+   },
+   "Export": {
+    "Name": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet2Subnet14FC6BC360484DFA"
+   }
+  },
+  "ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368": {
+   "Value": {
+    "Ref": "VpcprivateisolatedSubnet3Subnet4376C37C"
+   },
+   "Export": {
+    "Name": "csagent-prod-network:ExportsOutputRefVpcprivateisolatedSubnet3Subnet4376C37CFBBDA368"
+   }
+  },
+  "ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "AppSg898BCA4E",
+     "GroupId"
+    ]
+   },
+   "Export": {
+    "Name": "csagent-prod-network:ExportsOutputFnGetAttAppSg898BCA4EGroupId325D937C"
+   }
+  },
+  "ExportsOutputRefVpc8378EB38272D6E3A": {
+   "Value": {
+    "Ref": "Vpc8378EB38"
+   },
+   "Export": {
+    "Name": "csagent-prod-network:ExportsOutputRefVpc8378EB38272D6E3A"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
