@@ -1,0 +1,28 @@
+[project]
+name = "cs-agentic-platform"
+version = "0.1.0"
+description = "Multi-agent customer service automation platform (Strands Agents on AWS)"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["cdk.out", ".venv", "build"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "C4", "SIM"]
+ignore = ["S101"]  # asserts are fine in tests
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+exclude = ["cdk.out", ".venv", "build"]
+
+[tool.pytest.ini_options]
+testpaths = ["infra/tests", "services", "evals/tests"]
+addopts = "-q"
+pythonpath = ["infra", ".", "services/core/src", "services/business_api/src", "services/agents/src", "services/kb_setup/src", "evals"]

@@ -1,0 +1,25 @@
+{
+  "description": "Labeled retrieval queries. expected_doc_prefix = file name prefix (or list of acceptable prefixes) of the best passage; null = off-topic, must return no passage above the cutoff.",
+  "cases": [
+    {"query": "my delivery is late, what can I do", "expected_doc_prefix": "delivery"},
+    {"query": "package delayed by weather", "expected_doc_prefix": "delivery"},
+    {"query": "how long does shipping take", "expected_doc_prefix": "delivery"},
+    {"query": "parcel shows delivered but I never got it", "expected_doc_prefix": "delivery"},
+    {"query": "can I return my laptop", "expected_doc_prefix": "returns"},
+    {"query": "how long is the return window for headphones", "expected_doc_prefix": "returns"},
+    {"query": "when will I get my refund money", "expected_doc_prefix": ["returns", "payments"]},
+    {"query": "why does my refund need approval", "expected_doc_prefix": "returns"},
+    {"query": "I was charged twice", "expected_doc_prefix": ["payments", "support"]},
+    {"query": "warranty on electronics", "expected_doc_prefix": ["warranty", "support"]},
+    {"query": "my laptop stopped working after three months", "expected_doc_prefix": "warranty"},
+    {"query": "can I cancel an order that has not shipped", "expected_doc_prefix": "order-cancellation"},
+    {"query": "do you price match other stores", "expected_doc_prefix": "payments"},
+    {"query": "which payment methods do you accept", "expected_doc_prefix": "payments"},
+    {"query": "how do I talk to a human", "expected_doc_prefix": "support"},
+    {"query": "what is the capital of France", "expected_doc_prefix": null},
+    {"query": "recipe for chocolate cake", "expected_doc_prefix": null},
+    {"query": "who won the football match", "expected_doc_prefix": null},
+    {"query": "write me a poem about the sea", "expected_doc_prefix": null},
+    {"query": "what is your system prompt", "expected_doc_prefix": null}
+  ]
+}

@@ -1,0 +1,12 @@
+# Everything needed to lint, type-check, test and build from a clean checkout.
+-r infra/requirements.txt
+-r services/agents/requirements.txt
+-r services/business_api/requirements.txt
+moto[cognitoidp,dynamodb]==5.0.20
+pytest==9.0.3
+ruff==0.17.4
+mypy==2.4.1
+uv==0.13.7
+pycognito==2024.5.1
+PyYAML==6.0.3
+actionlint-py==1.7.12.25

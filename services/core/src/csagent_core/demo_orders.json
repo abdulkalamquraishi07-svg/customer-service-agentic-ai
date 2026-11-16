@@ -1,0 +1,60 @@
+[
+  {
+    "order_id": "ORD-1001",
+    "status": "SHIPPED",
+    "ordered_days_ago": 5,
+    "promised_delivery_days_from_order": 4,
+    "carrier": "BlueDart",
+    "tracking_number": "BD123456789",
+    "shipment_status": "IN_TRANSIT_DELAYED",
+    "last_scan": "Hub: Pune - delayed due to weather",
+    "total_amount": 74999,
+    "currency": "INR",
+    "category": "electronics",
+    "items": [{"sku": "LAP-15-PRO", "name": "ProBook 15 Laptop", "qty": 1, "price": 74999}]
+  },
+  {
+    "order_id": "ORD-1002",
+    "status": "DELIVERED",
+    "ordered_days_ago": 12,
+    "promised_delivery_days_from_order": 5,
+    "delivered_days_ago": 8,
+    "carrier": "Delhivery",
+    "tracking_number": "DL987654321",
+    "shipment_status": "DELIVERED",
+    "last_scan": "Delivered to customer",
+    "total_amount": 2499,
+    "currency": "INR",
+    "category": "accessories",
+    "items": [{"sku": "HP-BT-200", "name": "Bluetooth Headphones", "qty": 1, "price": 2499}]
+  },
+  {
+    "order_id": "ORD-1003",
+    "status": "DELIVERED",
+    "ordered_days_ago": 60,
+    "promised_delivery_days_from_order": 5,
+    "delivered_days_ago": 55,
+    "carrier": "Delhivery",
+    "tracking_number": "DL555000111",
+    "shipment_status": "DELIVERED",
+    "last_scan": "Delivered to customer",
+    "total_amount": 1299,
+    "currency": "INR",
+    "category": "accessories",
+    "items": [{"sku": "KB-MECH-1", "name": "Mechanical Keyboard", "qty": 1, "price": 1299}]
+  },
+  {
+    "order_id": "ORD-1004",
+    "status": "PROCESSING",
+    "ordered_days_ago": 1,
+    "promised_delivery_days_from_order": 5,
+    "carrier": null,
+    "tracking_number": null,
+    "shipment_status": "NOT_SHIPPED",
+    "last_scan": null,
+    "total_amount": 15999,
+    "currency": "INR",
+    "category": "electronics",
+    "items": [{"sku": "TAB-10-LITE", "name": "Tab 10 Lite", "qty": 1, "price": 15999}]
+  }
+]

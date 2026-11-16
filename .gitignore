@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+cdk.out/
+node_modules/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+*.log
+build/
+
+# Account-specific CDK lookups (contain the AWS account id)
+cdk.context.json
+infra/cdk.context.json
+web/.env.local
+.hypothesis/

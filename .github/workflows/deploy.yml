@@ -1,0 +1,59 @@
+name: Deploy
+
+# main -> dev (automatic) -> verify dev -> staging -> verify staging -> prod (each gated by the
+# GitHub *environment* of the same name: protection rules and required reviewers live there).
+# AWS access is via OIDC role assumption only; no AWS keys are stored in GitHub.
+#
+# One-time setup per environment (see docs/runbook.md): create the GitHub environment, add the
+# variables AWS_DEPLOY_ROLE_ARN and AWS_VERIFY_ROLE_ARN (outputs of the csagent-<env>-cicd stack).
+# Staging and prod only run when the repository variables ENABLE_STAGING / ENABLE_PROD are "true".
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy # never two deployments at once; a newer push queues, it does not cancel
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  CDK_CLI_VERSION: "2.1144.0"
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: read
+
+  deploy-dev:
+    needs: ci
+    uses: ./.github/workflows/_deploy-env.yml
+    with:
+      env_name: dev
+    permissions:
+      id-token: write
+      contents: read
+
+  staging:
+    needs: deploy-dev
+    if: ${{ vars.ENABLE_STAGING == 'true' }}
+    uses: ./.github/workflows/_deploy-env.yml
+    with:
+      env_name: staging
+    permissions:
+      id-token: write
+      contents: read
+
+  prod:
+    needs: staging
+    if: ${{ vars.ENABLE_PROD == 'true' }}
+    uses: ./.github/workflows/_deploy-env.yml
+    with:
+      env_name: prod
+    permissions:
+      id-token: write
+      contents: read
