@@ -6,7 +6,8 @@ name: Deploy
 #
 # One-time setup per environment (see docs/runbook.md): create the GitHub environment, add the
 # variables AWS_DEPLOY_ROLE_ARN and AWS_VERIFY_ROLE_ARN (outputs of the csagent-<env>-cicd stack).
-# Staging and prod only run when the repository variables ENABLE_STAGING / ENABLE_PROD are "true".
+# Each environment deploys only when its repository variable is "true": ENABLE_DEV, ENABLE_STAGING,
+# ENABLE_PROD. With none set (for example while nothing is deployed), a push runs CI only.
 on:
   push:
     branches: [main]
@@ -31,6 +32,7 @@ jobs:
 
   deploy-dev:
     needs: ci
+    if: ${{ vars.ENABLE_DEV == 'true' }}
     uses: ./.github/workflows/_deploy-env.yml
     with:
       env_name: dev

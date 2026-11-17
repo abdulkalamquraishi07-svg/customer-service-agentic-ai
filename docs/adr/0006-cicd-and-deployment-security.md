@@ -13,7 +13,7 @@ repeatable, reviewed, least-privilege deployments with automated quality gates.
 2. **CD (`deploy.yml`)**: main -> CI -> dev deploy -> dev verification -> staging -> prod. Each step
    runs in the GitHub *environment* of the same name, so branch rules and required reviewers are
    enforced by GitHub. Deployments are serialized (`concurrency: deploy`, no cancellation).
-   Staging and prod run only when the repository variables ENABLE_STAGING / ENABLE_PROD are true.
+   Each environment deploys only when its repository variable is true (ENABLE_DEV, ENABLE_STAGING, ENABLE_PROD); with none set, pushes run CI only.
 3. **No stored AWS keys.** Jobs authenticate with GitHub's OIDC token. Two roles per environment
    (stack `csagent-<env>-cicd`), each trusting exactly one subject,
    `repo:<owner>/<name>:environment:<env>` (no wildcards, enforced by a test):

@@ -74,6 +74,7 @@ def test_deployments_are_serialized_and_gated_by_environment():
     jobs = deploy["jobs"]
     assert jobs["deploy-dev"]["needs"] == "ci"  # main is never deployed untested
     assert jobs["staging"]["needs"] == "deploy-dev" and jobs["prod"]["needs"] == "staging"
+    assert "ENABLE_DEV" in jobs["deploy-dev"]["if"]
     assert "ENABLE_STAGING" in jobs["staging"]["if"] and "ENABLE_PROD" in jobs["prod"]["if"]
 
     env_wf = load(WORKFLOWS / "_deploy-env.yml")

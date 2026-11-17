@@ -18,7 +18,8 @@ All commands run from the repo root with the virtualenv active.
 4. Optional pre-flight: `python scripts/check_ci_permissions.py --env dev` simulates every AWS
    call the post-deploy checks make as the verify role (the role itself can only be assumed from
    GitHub). Last run: 34 calls, 0 problems.
-5. Push to `main`. Staging and prod run only after you set the repository variables
+5. Set the repository variable `ENABLE_DEV` to `true` and push to `main` (without it, pushes run CI only).
+   Staging and prod run only after you set the repository variables
    `ENABLE_STAGING` / `ENABLE_PROD` to `true` (staging adds interface VPC endpoints: roughly
    USD 7 per endpoint per AZ per month, so about USD 100/month before any traffic).
 
